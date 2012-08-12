@@ -1,0 +1,52 @@
+aMAZEingSaver
+
+OS X Port Copyright (C) 2006 Michael Schmidt <mschmidt.github@gmail.com>.
+
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
+provided that the above copyright notice appear in all copies and that
+both that copyright notice and this permission notice appear in
+supporting documentation.
+
+This file is provided AS IS with no warranties of any kind.  The author
+shall have no liability with respect to the infringement of copyrights,
+trade secrets or any patents by this file or any part thereof.  In no
+event will the author be liable for any lost revenue or profits or
+other special, indirect and consequential damages.
+
+
+Original xlockmore copyright:
+
+Copyright (c) 1988 by Sun Microsystems
+
+Permission to use, copy, modify, and distribute this software and its
+documentation for any purpose and without fee is hereby granted,
+provided that the above copyright notice appear in all copies and that
+both that copyright notice and this permission notice appear in
+supporting documentation.
+
+This file is provided AS IS with no warranties of any kind.  The author
+shall have no liability with respect to the infringement of copyrights,
+trade secrets or any patents by this file or any part thereof.  In no
+event will the author be liable for any lost revenue or profits or
+other special, indirect and consequential damages.
+
+Revision History:
+ 27-Nov-2001: interactive maze mode Ephraim Yawitz fyawitz@actcom.co.il
+ 01-Nov-2000: Allocation checks
+ 27-Oct-1997: xpm and ras capability added
+ 10-May-1997: Compatible with xscreensaver
+ 27-Feb-1996: Add ModeInfo args to init and callback hooks, use new
+              ModeInfo handle to specify long pauses (eliminate onepause).
+		          Ron Hitchens <ron@idiom.com>
+ 20-Jul-1995: minimum size fix Peter Schmitzberger <schmitz@coma.sbg.ac.at>
+ 17-Jun-1995: removed sleep statements
+ 22-Mar-1995: multidisplay fix Caleb Epstein <epstein_caleb@jpmorgan.com>
+ 09-Mar-1995: changed how batchcount is used
+ 27-Feb-1995: patch for VMS
+ 04-Feb-1995: patch to slow down maze Heath Kehoe <hakehoe@icaen.uiowa.edu>
+ 17-Jun-1994: HP ANSI C compiler needs a type cast for gray_bits
+              Richard Lloyd <R.K.Lloyd@csc.liv.ac.uk>
+ 02-Sep-1993: xlock version David Bagley <bagleyd@tux.org>
+ 07-Mar-1993: Good ideas from xscreensaver Jamie Zawinski <jwz@jwz.org>
+ 06-Jun-1985: Martin Weiss Sun Microsystems
