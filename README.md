@@ -25,6 +25,8 @@ Installation:
 Version History:
 ----------------
 
+- 2.0.1:    Patches for Retina displays
+
 - 2.0.0:    Modernized project for OS X Mountain Lion
 
 - 1.0.2:    Recompiled for Snow Leopard (Intel)
