@@ -7,7 +7,7 @@ What it is:
 
 aMAZEing Saver a port of the screensaver module "maze" found in xlockmore to OS X Mountain Lion. This screensaver generates random mazes and tries to find a way through the maze by using a depth first search algorithm. The solving process is animated on screen.
 
-OS X port by Michael Schmidt <mschmidt.github@gmail.com>
+OS X port by Michael Schmidt <github@mschmidt.me>
 
 
 Installation:
@@ -25,7 +25,7 @@ Installation:
 Version History:
 ----------------
 
-- 2.0.1:    Patches for Retina displays
+- 2.0.1:    Patches for Retina displays and OS X Mavericks
 
 - 2.0.0:    Modernized project for OS X Mountain Lion
 

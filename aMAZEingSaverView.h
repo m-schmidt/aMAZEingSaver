@@ -1,7 +1,7 @@
 // aMAZEingSaverView.h
 // A port of xlockmore's maze mode to OS X
 //
-// OS X Port Copyright (C) 2006 Michael Schmidt <mschmidt.github@gmail.com>.
+// OS X Port Copyright (C) 2006-2013 Michael Schmidt <github@mschmidt.me>.
 //
 // Permission to use, copy, modify, and distribute this software and its
 // documentation for any purpose and without fee is hereby granted,
