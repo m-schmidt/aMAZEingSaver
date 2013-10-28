@@ -264,10 +264,10 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 
 
         // Redraw area around changed cell
-        [self setNeedsDisplayInRect: NSMakeRect (baseX + (next_x * cellSize) - 2,
-                                                 baseY + (next_y * cellSize) - 2,
-                                                 cellSize + 4,
-                                                 cellSize + 4)];
+        [self setNeedsDisplayInRect: NSMakeRect (baseX + (next_x * cellSize) - 4,
+                                                 baseY + (next_y * cellSize) - 4,
+                                                 cellSize + 8,
+                                                 cellSize + 8)];
     }
 }
 
@@ -369,8 +369,8 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
                 switch (cell & DOOR_IN_ANY)
                 {
                     case DOOR_IN_BOTTOM:
-                        cg_rect.origin.y    -= 3;
-                        cg_rect.size.height += 3;
+                        cg_rect.origin.y    -= 4;
+                        cg_rect.size.height += 4;
                         break;
 
                     case DOOR_IN_RIGHT:
@@ -382,8 +382,8 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
                         break;
 
                     case DOOR_IN_LEFT:
-                        cg_rect.origin.x    -= 3;
-                        cg_rect.size.width  += 3;
+                        cg_rect.origin.x    -= 4;
+                        cg_rect.size.width  += 4;
                         break;
                 }
 
