@@ -104,7 +104,7 @@
 #define DIR_LEFT                 3
 
 #define CELL(X,Y)  (maze[(X) * height + (Y)])
-#define NRAND(X)   (random () % (X))
+#define NRAND(X)   (arc4random_uniform (X))
 
 
 // An image containing the icon of Finder.app
@@ -135,8 +135,6 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 
 + (void)initialize
 {
-    srandom (time (NULL));
-
     NSString *path   = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.finder"];
     NSBundle *bundle = [NSBundle bundleWithPath: path];
 
