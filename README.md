@@ -25,7 +25,7 @@ Installation:
 Version History:
 ----------------
 
-- 2.0.1:    Patches for Retina displays and OS X Mavericks
+- 2.0.2:    Patches for Retina displays and OS X Mavericks
 
 - 2.0.0:    Modernized project for OS X Mountain Lion
 

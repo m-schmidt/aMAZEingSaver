@@ -133,19 +133,18 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 @implementation aMAZEingSaverView
 
 
-+ (void)initialize
-{
-    NSString *path   = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.finder"];
-    NSBundle *bundle = [NSBundle bundleWithPath: path];
-
-    // Preload finder icon
-    logo = [[NSImage alloc] initWithContentsOfFile: [bundle pathForResource:@"Finder" ofType: @"icns"]];
-}
-
-
-
 - (id)initWithFrame:(NSRect)frame isPreview:(BOOL)flag
 {
+    static dispatch_once_t onceToken;
+
+    dispatch_once(&onceToken, ^{
+        NSString *finderPath = [[NSWorkspace sharedWorkspace] absolutePathForAppBundleWithIdentifier:@"com.apple.finder"];
+        NSBundle *bundle = [NSBundle bundleWithPath:finderPath];
+
+        // Preload finder icon
+        logo = [[NSImage alloc] initWithContentsOfFile:[bundle pathForResource:@"Finder" ofType:@"icns"]];
+    });
+
     if ((self = [super initWithFrame:frame isPreview:isPreview]))
     {
         isPreview = flag;
@@ -413,7 +412,7 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 
 
     // Draw the Finder logo
-    if (logo)
+    if (logo && logoX >= 0 && logoY >= 0)
     {
         NSSize iSize = [logo size];
         float  sSize = (isPreview) ? 48 : 128;
@@ -423,10 +422,10 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
                                       sSize,
                                       sSize);
 
-        [logo drawInRect: logoRect
-                fromRect: NSMakeRect (0, 0, iSize.width, iSize.height)
-               operation: NSCompositeSourceOver
-                fraction: 1.0];
+        [logo drawInRect:logoRect
+                fromRect:NSMakeRect (0, 0, iSize.width, iSize.height)
+               operation:NSCompositeSourceOver
+                fraction:1.0];
     }
 
     CGColorSpaceRelease (cg_space);
@@ -532,15 +531,17 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 
 
     // Space for logo
-    if (logo != nil && width > logoSize + 10 && height > logoSize + 10)
+    if (logo != nil && width > logoSize + 6 && height > logoSize + 6)
     {
-        logoX = NRAND (width  - logoSize - 10) + 5;
-        logoY = NRAND (height - logoSize - 10) + 5;
+        logoX = NRAND (width  - logoSize - 6) + 3;
+        logoY = NRAND (height - logoSize - 6) + 3;
 
         for (x = 0; x < logoSize; x++)
             for (y = 0; y < logoSize; y++)
                 CELL (logoX + x, logoY + y) |= DOOR_IN_ANY;
     }
+    else
+        logoX = logoY = -1;
 }
 
 
