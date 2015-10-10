@@ -1,7 +1,7 @@
 // aMAZEingSaverView.m
 // A port of xlockmore's maze mode to OS X
 //
-// OS X Port Copyright (C) 2006-2013 Michael Schmidt <github@mschmidt.me>.
+// OS X Port Copyright (C) 2006-2015 Michael Schmidt <github@mschmidt.me>.
 //
 // Permission to use, copy, modify, and distribute this software and its
 // documentation for any purpose and without fee is hereby granted,
@@ -118,7 +118,6 @@ static CGFloat active   [4] = { 0.96, 0.96, 0.96, 1.0 };
 static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 
 
-
 @interface aMAZEingSaverView (private)
 
 - (void)createMazeWithFrame:(NSRect)frame;
@@ -129,12 +128,10 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 @end
 
 
-
 @implementation aMAZEingSaverView
 
+- (id)initWithFrame:(NSRect)frame isPreview:(BOOL)flag {
 
-- (id)initWithFrame:(NSRect)frame isPreview:(BOOL)flag
-{
     static dispatch_once_t onceToken;
 
     dispatch_once(&onceToken, ^{
@@ -145,14 +142,14 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
         logo = [[NSImage alloc] initWithContentsOfFile:[bundle pathForResource:@"Finder" ofType:@"icns"]];
     });
 
-    if ((self = [super initWithFrame:frame isPreview:isPreview]))
-    {
+    if ((self = [super initWithFrame:frame isPreview:isPreview])) {
+
         isPreview = flag;
         maze      = NULL;
         path      = NULL;
 
         [self createMazeWithFrame:frame];
-        [self setAnimationTimeInterval:1/60.0];
+        [self setAnimationTimeInterval:1 / 60.0];
 
         delayCounter = DELAY_SMALL;
     }
@@ -161,9 +158,8 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 }
 
 
+- (void)dealloc {
 
-- (void)dealloc
-{
     if (maze)
         free (maze);
 
@@ -172,9 +168,8 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 }
 
 
+- (void)animateOneFrame {
 
-- (void)animateOneFrame
-{
     path_t *top = &(path [pathLen]);
     int *cell   = &(CELL (top->x, top->y));
 
@@ -182,15 +177,14 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 
 
     // Delay phase: decrement delaycounter
-    if (delayCounter > 0)
-    {
+    if (delayCounter > 0) {
+
         delayCounter --;
 
         // We are in the mid of the delay => switch to next maze and continue delay
-        if (delayCounter == DELAY_SMALL)
-        {
-            if (isPreview == NO)
-            {
+        if (delayCounter == DELAY_SMALL) {
+            if (isPreview == NO) {
+
                 CGDisplayFadeReservationToken token;
 
                 CGAcquireDisplayFadeReservation (3.0, &token);
@@ -201,43 +195,41 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
                 CGDisplayFade (token, 0.5, kCGDisplayBlendSolidColor, kCGDisplayBlendNormal, 0.0, 0.0, 0.0, false);
                 CGReleaseDisplayFadeReservation (token);
             }
-            else
-                [self setNeedsDisplay: YES];
+            else {
+                [self setNeedsDisplay:YES];
+            }
         }
     }
+    else if (top->x == endX && top->y == endY) {
 
+        // Maze solved => create next maze and start delay
 
-    // Maze solved => create next maze and start delay
-    else if (top->x == endX && top->y == endY)
-    {
-        [self createMazeWithFrame: [self frame]];
+        [self createMazeWithFrame:[self frame]];
         delayCounter = DELAY_BIG;
     }
+    else {
 
+        // During solve proceed with the depth first search
 
-    // During solve proceed with the depth first search
-    else
-    {
         // Select direction for forward-step
-        for (next_dir = DIR_DOWN; next_dir <= DIR_LEFT; next_dir++)
-        {
-            if ((*cell & (WALL_BOTTOM >> next_dir)) == 0)
-            {
+        for (next_dir = DIR_DOWN; next_dir <= DIR_LEFT; next_dir++) {
+            if ((*cell & (WALL_BOTTOM >> next_dir)) == 0) {
+
                 next_x = top->x;
                 next_y = top->y;
 
-                switch (next_dir)
-                {
+                switch (next_dir) {
+
                     case DIR_DOWN:  next_y -= 1; break;
                     case DIR_RIGHT: next_x += 1; break;
                     case DIR_UP:    next_y += 1; break;
                     case DIR_LEFT:  next_x -= 1; break;
                 }
 
-                if (0 <= next_x && next_x < width)
-                    if (0 <= next_y && next_y < height)
-                        if ((CELL (next_x, next_y) & VISITED_SQUARE) == 0)
-                        {
+                if (0 <= next_x && next_x < width) {
+                    if (0 <= next_y && next_y < height) {
+                        if ((CELL (next_x, next_y) & VISITED_SQUARE) == 0) {
+
                             CELL (next_x, next_y) |= VISITED_SQUARE;
 
                             pathLen += 1;
@@ -245,13 +237,14 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
                             path [pathLen].y = next_y;
                             break;
                         }
+                    }
+                }
             }
         }
 
-
         // No direction found => step back
-        if (next_dir > DIR_LEFT)
-        {
+        if (next_dir > DIR_LEFT) {
+
             next_x = top->x;
             next_y = top->y;
 
@@ -269,24 +262,20 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 }
 
 
+- (BOOL)hasConfigureSheet {
 
-- (BOOL)hasConfigureSheet
-{
     return NO;
 }
 
 
+- (NSWindow *)configureSheet {
 
-- (NSWindow*)configureSheet
-{
     return nil;
 }
 
 
-
 #pragma mark -
 #pragma mark Drawing the Maze
-
 
 
 #define NSRect2CGRect(R) (CGRectMake ((R).origin.x, (R).origin.y, (R).size.width, (R).size.height))
@@ -302,8 +291,8 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 } while (0)
 
 
-- (void)drawRect:(NSRect)rect
-{
+- (void)drawRect:(NSRect)rect {
+
     CGContextRef cg_ctx;
     CGColorSpaceRef cg_space;
     CGRect cg_rect;
@@ -325,7 +314,7 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
     CGContextSetStrokeColor (cg_ctx, white);
 
     CGContextSetShouldAntialias (cg_ctx, NO);
-    CGContextTranslateCTM (cg_ctx, baseX+0.5, baseY+0.5);
+    CGContextTranslateCTM (cg_ctx, baseX + 0.5, baseY + 0.5);
 
 
     // What must be redrawn
@@ -338,8 +327,8 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
     if (redraw_y2 > height) redraw_y2 = height;
 
     for (x = redraw_x1; x < redraw_x2; x++)
-        for (y = redraw_y1; y < redraw_y2; y++)
-        {
+        for (y = redraw_y1; y < redraw_y2; y++) {
+
             cell = CELL (x, y);
 
             if (y == 0 && cell & WALL_BOTTOM)
@@ -355,16 +344,16 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
                 LINE (x * cellSize, (y + 1) * cellSize, cellSize, 0);
 
 
-            if (cell & VISITED_SQUARE)
-            {
+            if (cell & VISITED_SQUARE) {
+
                 CGContextSetFillColor (cg_ctx, (cell & INACTIVE_SQUARE) ? inactive : active);
 
                 cg_rect.origin.x   = x * cellSize + 2;
                 cg_rect.origin.y   = y * cellSize + 2;
                 cg_rect.size.width = cg_rect.size.height = cellSize - 4;
 
-                switch (cell & DOOR_IN_ANY)
-                {
+                switch (cell & DOOR_IN_ANY) {
+
                     case DOOR_IN_BOTTOM:
                         cg_rect.origin.y    -= 4;
                         cg_rect.size.height += 4;
@@ -387,16 +376,16 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
                 CGContextFillRect (cg_ctx, cg_rect);
             }
 
-            if (cell & (START_SQUARE | END_SQUARE))
-            {
+            if (cell & (START_SQUARE | END_SQUARE)) {
+
                 CGContextSetFillColor (cg_ctx, active);
 
                 cg_rect.origin.x   = x * cellSize + 2;
                 cg_rect.origin.y   = y * cellSize + 2;
                 cg_rect.size.width = cg_rect.size.height = cellSize - 4;
 
-                switch ((cell & START_SQUARE) ? startDir : endDir)
-                {
+                switch ((cell & START_SQUARE) ? startDir : endDir) {
+
                     case DIR_DOWN:  cg_rect.origin.y -= 4; break;
                     case DIR_RIGHT: cg_rect.origin.x += 4; break;
                     case DIR_UP:    cg_rect.origin.y += 4; break;
@@ -412,8 +401,8 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 
 
     // Draw the Finder logo
-    if (logo && logoX >= 0 && logoY >= 0)
-    {
+    if (logo && logoX >= 0 && logoY >= 0) {
+
         NSSize iSize = [logo size];
         float  sSize = (isPreview) ? 48 : 128;
 
@@ -432,21 +421,17 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 }
 
 
-
 #pragma mark -
 #pragma mark Creating a Maze
 
 
+- (void)createMazeWithFrame:(NSRect)frame {
 
-- (void)createMazeWithFrame:(NSRect)frame
-{
-    if (isPreview)
-    {
+    if (isPreview) {
         cellSize = MIN_CELL_SIZE + NRAND (MAX_CELL_SIZE_PREVIEW - MIN_CELL_SIZE + 1);
         logoSize = (LOGO_SIZE_PREVIEW + cellSize - 1) / cellSize;
     }
-    else
-    {
+    else {
         cellSize = MIN_CELL_SIZE + NRAND (MAX_CELL_SIZE - MIN_CELL_SIZE + 1);
         logoSize = (LOGO_SIZE + cellSize - 1) / cellSize;
     }
@@ -471,34 +456,31 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 }
 
 
-
 // Creates an empty maze with outer walls, space for a logo, and a start/endposition.
-- (void)clearMaze
-{
+- (void)clearMaze {
+
     int x, y, wall;
 
 
     // No doors for all cells
     memset (maze, 0, sizeof (int) * width * height);
 
-
     // Outer walls
-    for (x = 0; x < width; x++)
-    {
+    for (x = 0; x < width; x++) {
+
         CELL (x, 0)          |= WALL_BOTTOM;
         CELL (x, height - 1) |= WALL_TOP;
     }
 
-    for (y = 0; y < height; y++)
-    {
+    for (y = 0; y < height; y++) {
+
         CELL (0,         y) |= WALL_LEFT;
         CELL (width - 1, y) |= WALL_RIGHT;
     }
 
-
     // Start square
-    switch ((wall = NRAND (4)))
-    {
+    switch ((wall = NRAND (4))) {
+
         case DIR_DOWN:   x = NRAND (width);   y = 0;               break;
         case DIR_RIGHT:  x = width - 1;       y = NRAND (height);  break;
         case DIR_UP:     x = NRAND (width);   y = height - 1;      break;
@@ -512,10 +494,9 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
     startY   = y;
     startDir = wall;
 
-
     // End square
-    switch ((wall = (wall + 2) % 4))
-    {
+    switch ((wall = (wall + 2) % 4)) {
+
         case DIR_DOWN:   x = NRAND (width);   y = 0;               break;
         case DIR_RIGHT:  x = width - 1;       y = NRAND (height);  break;
         case DIR_UP:     x = NRAND (width);   y = height - 1;      break;
@@ -529,10 +510,9 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
     endY   = y;
     endDir = wall;
 
-
     // Space for logo
-    if (logo != nil && width > logoSize + 6 && height > logoSize + 6)
-    {
+    if (logo != nil && width > logoSize + 6 && height > logoSize + 6) {
+
         logoX = NRAND (width  - logoSize - 6) + 3;
         logoY = NRAND (height - logoSize - 6) + 3;
 
@@ -540,116 +520,109 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
             for (y = 0; y < logoSize; y++)
                 CELL (logoX + x, logoY + y) |= DOOR_IN_ANY;
     }
-    else
+    else {
         logoX = logoY = -1;
+    }
 }
 
 
-
 // Randomly chooses a direction to leave the current cell.
-- (int)chooseDirectionForX:(int)X Y:(int)Y
-{
+- (int)chooseDirectionForX:(int)X Y:(int)Y {
+
     int cand [3], count = 0;
 
 
     // Top wall
-    if ((CELL (X, Y) & (DOOR_IN_BOTTOM | DOOR_OUT_BOTTOM | WALL_BOTTOM)) == 0)
-    {
-        if (CELL (X, Y - 1) & DOOR_IN_ANY)
-        {
+    if ((CELL (X, Y) & (DOOR_IN_BOTTOM | DOOR_OUT_BOTTOM | WALL_BOTTOM)) == 0) {
+        if (CELL (X, Y - 1) & DOOR_IN_ANY) {
+
             CELL (X, Y)     |= WALL_BOTTOM;
             CELL (X, Y - 1) |= WALL_TOP;
         }
-        else
+        else {
             cand [count++] = DIR_DOWN;
+        }
 	}
 
-
     // Right wall
-    if ((CELL (X, Y) & (DOOR_IN_RIGHT | DOOR_OUT_RIGHT | WALL_RIGHT)) == 0)
-    {
-        if (CELL (X + 1, Y) & DOOR_IN_ANY)
-        {
+    if ((CELL (X, Y) & (DOOR_IN_RIGHT | DOOR_OUT_RIGHT | WALL_RIGHT)) == 0) {
+        if (CELL (X + 1, Y) & DOOR_IN_ANY) {
+
             CELL (X, Y)     |= WALL_RIGHT;
             CELL (X + 1, Y) |= WALL_LEFT;
         }
-        else
+        else {
             cand [count++] = DIR_RIGHT;
+        }
 	}
 
-
     // Bottom wall
-    if ((CELL (X, Y) & (DOOR_IN_TOP | DOOR_OUT_TOP | WALL_TOP)) == 0)
-    {
-        if (CELL (X, Y + 1) & DOOR_IN_ANY)
-        {
+    if ((CELL (X, Y) & (DOOR_IN_TOP | DOOR_OUT_TOP | WALL_TOP)) == 0) {
+        if (CELL (X, Y + 1) & DOOR_IN_ANY) {
+
             CELL (X, Y)     |= WALL_TOP;
             CELL (X, Y + 1) |= WALL_BOTTOM;
         }
-        else
+        else {
             cand [count++] = DIR_UP;
+        }
 	}
 
-
     // Left wall
-    if ((CELL (X, Y) & (DOOR_IN_LEFT | DOOR_OUT_LEFT | WALL_LEFT)) == 0)
-    {
-        if (CELL (X - 1, Y) & DOOR_IN_ANY)
-        {
+    if ((CELL (X, Y) & (DOOR_IN_LEFT | DOOR_OUT_LEFT | WALL_LEFT)) == 0) {
+        if (CELL (X - 1, Y) & DOOR_IN_ANY) {
+
             CELL (X, Y)     |= WALL_LEFT;
             CELL (X - 1, Y) |= WALL_RIGHT;
         }
-        else
+        else {
             cand [count++] = DIR_LEFT;
+        }
 	}
 
     return (count == 0) ? DIR_NONE : cand [NRAND (count)];
 }
 
 
-
 // Creates a random depth first search walk in the empty maze and marks walls. The created maze has at most one solution and is cycle-free.
-- (void)createWalls
-{
+- (void)createWalls {
+
     int x = startX;
     int y = startY;
 
 
-    for (pathLen = 0; ; pathLen ++)
-    {
-        int nextDirection;
+    for (pathLen = 0; ; pathLen ++) {
 
+        int nextDirection;
 
         // Push current position
         path [pathLen].x = x;
         path [pathLen].y = y;
 
-
         // Choose a new walking direction
-        while ((nextDirection = [self chooseDirectionForX:x Y:y]) == DIR_NONE)
-        {
+        while ((nextDirection = [self chooseDirectionForX:x Y:y]) == DIR_NONE) {
+
             // No direction found => backtrack
-            if (--pathLen >= 0)
-            {
+            if (--pathLen >= 0) {
+
                 x = path [pathLen].x;
                 y = path [pathLen].y;
          	}
-            else
+            else {
                 return;
+            }
         }
-
 
         // Mark the outgoing door
         CELL (x, y) |= (DOOR_OUT_BOTTOM >> nextDirection);
 
-        switch (nextDirection)
-        {
+        switch (nextDirection) {
+
             case DIR_DOWN:  y -= 1; break;
             case DIR_RIGHT: x += 1; break;
             case DIR_UP:    y += 1; break;
             case DIR_LEFT:  x -= 1; break;
         }
-
 
         // Mark the incoming door
         CELL (x, y) |= (DOOR_IN_BOTTOM >> ((nextDirection + 2) % 4));

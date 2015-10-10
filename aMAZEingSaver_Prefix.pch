@@ -1,4 +1,5 @@
-// aMAZEingSaver -- common prefix header
+// aMAZEingSaver
+// Common prefix header
 
 #ifdef __OBJC__
     #import <Cocoa/Cocoa.h>
