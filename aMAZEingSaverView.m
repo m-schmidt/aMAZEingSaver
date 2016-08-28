@@ -130,7 +130,7 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 
 @implementation aMAZEingSaverView
 
-- (id)initWithFrame:(NSRect)frame isPreview:(BOOL)flag {
+- (instancetype)initWithFrame:(NSRect)frame isPreview:(BOOL)flag {
 
     static dispatch_once_t onceToken;
 
@@ -149,7 +149,7 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
         path      = NULL;
 
         [self createMazeWithFrame:frame];
-        [self setAnimationTimeInterval:1 / 60.0];
+        self.animationTimeInterval = 1 / 60.0;
 
         delayCounter = DELAY_SMALL;
     }
@@ -204,7 +204,7 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 
         // Maze solved => create next maze and start delay
 
-        [self createMazeWithFrame:[self frame]];
+        [self createMazeWithFrame:self.frame];
         delayCounter = DELAY_BIG;
     }
     else {
@@ -301,7 +301,7 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 
 
     // Drawing setup
-    cg_ctx   = (CGContextRef)[[NSGraphicsContext currentContext] graphicsPort];
+    cg_ctx   = (CGContextRef)[NSGraphicsContext currentContext].graphicsPort;
     cg_space = CGColorSpaceCreateDeviceRGB ();
     CGContextSetFillColorSpace (cg_ctx, cg_space);
 
@@ -403,7 +403,7 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
     // Draw the Finder logo
     if (logo && logoX >= 0 && logoY >= 0) {
 
-        NSSize iSize = [logo size];
+        NSSize iSize = logo.size;
         float  sSize = (isPreview) ? 48 : 128;
 
         NSRect logoRect = NSMakeRect (baseX + logoX * cellSize + (logoSize * cellSize - sSize) / 2,
