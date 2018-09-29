@@ -1,7 +1,7 @@
 // aMAZEingSaverView.m
 // A port of xlockmore's maze mode to OS X
 //
-// OS X Port Copyright (C) 2006-2015 Michael Schmidt <github@mschmidt.me>.
+// OS X Port Copyright (C) 2006-2018 Michael Schmidt <github@mschmidt.me>.
 //
 // Permission to use, copy, modify, and distribute this software and its
 // documentation for any purpose and without fee is hereby granted,
@@ -274,8 +274,7 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 }
 
 
-#pragma mark -
-#pragma mark Drawing the Maze
+#pragma mark - Drawing the Maze
 
 
 #define NSRect2CGRect(R) (CGRectMake ((R).origin.x, (R).origin.y, (R).size.width, (R).size.height))
@@ -301,7 +300,7 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 
 
     // Drawing setup
-    cg_ctx   = (CGContextRef)[NSGraphicsContext currentContext].graphicsPort;
+    cg_ctx   = (CGContextRef)[NSGraphicsContext currentContext].CGContext;
     cg_space = CGColorSpaceCreateDeviceRGB ();
     CGContextSetFillColorSpace (cg_ctx, cg_space);
 
@@ -413,7 +412,7 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 
         [logo drawInRect:logoRect
                 fromRect:NSMakeRect (0, 0, iSize.width, iSize.height)
-               operation:NSCompositeSourceOver
+               operation:NSCompositingOperationSourceOver
                 fraction:1.0];
     }
 
@@ -421,8 +420,7 @@ static CGFloat inactive [4] = { 0.55, 0.55, 0.55, 1.0 };
 }
 
 
-#pragma mark -
-#pragma mark Creating a Maze
+#pragma mark - Creating a Maze
 
 
 - (void)createMazeWithFrame:(NSRect)frame {
